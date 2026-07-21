@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Patient Intake Form — Demo</title>
+<style>
+  :root{
+    --bg:#f4f7fb;--card:#fff;--ink:#0f2740;--muted:#5b7089;--brand:#0e7c86;--brand-2:#1591c9;
+    --line:#e2e9f1;--soft:#eef5f9;--ok:#0e9f6e;--err:#dc2626;--shadow:0 6px 24px rgba(16,45,71,.08);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+  header{background:linear-gradient(120deg,var(--brand),var(--brand-2));color:#fff;padding:22px 28px}
+  header .wrap{max-width:760px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .logo{display:flex;align-items:center;gap:12px;font-weight:700;font-size:19px}
+  .logo .dot{width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,.18);display:grid;place-items:center;font-size:18px}
+  header a{color:#fff;text-decoration:none;font-size:14px;opacity:.9}
+  main{max-width:760px;margin:0 auto;padding:26px 28px 60px}
+  .steps{display:flex;gap:8px;margin-bottom:22px}
+  .step{flex:1;height:6px;border-radius:999px;background:var(--line)}
+  .step.active{background:var(--brand-2)}
+  .step.done{background:var(--ok)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:26px}
+  .stepnum{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--brand);font-weight:700}
+  h2{margin:4px 0 2px;font-size:20px}
+  .sub{color:var(--muted);font-size:13.5px;margin-bottom:20px}
+  .fld{margin-bottom:16px}
+  label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+  label .req{color:var(--err)}
+  input,select,textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:11px 12px;font-size:14px;font-family:inherit;background:#fbfdff;color:var(--ink)}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--brand-2);border-color:transparent}
+  input.bad,select.bad{border-color:var(--err);background:#fef2f2}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:560px){.two{grid-template-columns:1fr}}
+  .err{color:var(--err);font-size:12px;margin-top:4px;display:none}
+  .err.show{display:block}
+  .check{display:flex;gap:10px;align-items:flex-start;background:var(--soft);border:1px solid #d5e6ec;border-radius:10px;padding:14px;font-size:13.5px}
+  .check input{width:auto;margin-top:3px}
+  .row{display:flex;justify-content:space-between;gap:12px;margin-top:24px}
+  button{border:0;border-radius:9px;padding:12px 22px;font-weight:600;font-size:14px;cursor:pointer}
+  .primary{background:var(--brand);color:#fff}.primary:hover{background:#0b6771}
+  .ghost{background:var(--soft);color:var(--brand)}.ghost:hover{background:#e2eef3}
+  .hidden{display:none}
+  .review dt{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-top:14px}
+  .review dd{margin:2px 0 0;font-size:15px;font-weight:600}
+  .success{text-align:center;padding:24px 10px}
+  .success .big{width:64px;height:64px;border-radius:50%;background:#dcfce7;color:var(--ok);display:grid;place-items:center;font-size:32px;margin:0 auto 14px}
+  .badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--brand);background:var(--soft);border:1px solid #d5e6ec;padding:5px 11px;border-radius:999px;margin-top:8px}
+  .privacy{font-size:12px;color:var(--muted);margin-top:18px;display:flex;gap:8px;align-items:flex-start}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="logo"><span class="dot">📋</span> Patient Intake <span style="font-size:12px;background:rgba(255,255,255,.16);padding:4px 10px;border-radius:999px">HIPAA-aware demo</span></div>
+    <a href="index.html">← Portfolio</a>
+  </div>
+</header>
+
+<main>
+  <div class="steps">
+    <div class="step active" id="bar0"></div>
+    <div class="step" id="bar1"></div>
+    <div class="step" id="bar2"></div>
+    <div class="step" id="bar3"></div>
+  </div>
+
+  <div class="card">
+    <!-- Step 1: Personal -->
+    <section id="step0">
+      <div class="stepnum">Step 1 of 4</div>
+      <h2>Personal information</h2>
+      <p class="sub">Tell us who you are. Fields marked <span style="color:var(--err)">*</span> are required.</p>
+      <div class="two">
+        <div class="fld"><label>First name <span class="req">*</span></label><input id="first"><div class="err">Required</div></div>
+        <div class="fld"><label>Last name <span class="req">*</span></label><input id="last"><div class="err">Required</div></div>
+      </div>
+      <div class="two">
+        <div class="fld"><label>Date of birth <span class="req">*</span></label><input id="dob" type="date"><div class="err">Required</div></div>
+        <div class="fld"><label>Sex at birth</label><select id="sex"><option value="">Select…</option><option>Female</option><option>Male</option><option>Intersex</option><option>Prefer not to say</option></select></div>
+      </div>
+      <div class="two">
+        <div class="fld"><label>Email <span class="req">*</span></label><input id="email" type="email" placeholder="you@example.com"><div class="err">Enter a valid email</div></div>
+        <div class="fld"><label>Mobile phone <span class="req">*</span></label><input id="phone" placeholder="+63 900 000 0000"><div class="err">Required</div></div>
+      </div>
+    </section>
+
+    <!-- Step 2: Medical -->
+    <section id="step1" class="hidden">
+      <div class="stepnum">Step 2 of 4</div>
+      <h2>Medical background</h2>
+      <p class="sub">This helps your provider prepare for the visit.</p>
+      <div class="fld"><label>Reason for visit <span class="req">*</span></label><textarea id="reason" rows="3" placeholder="Briefly describe your main concern…"></textarea><div class="err">Required</div></div>
+      <div class="fld"><label>Known allergies</label><input id="allergies" placeholder="e.g. Penicillin, none"></div>
+      <div class="fld"><label>Current medications</label><textarea id="meds" rows="2" placeholder="List medications and doses, or 'none'"></textarea></div>
+      <div class="fld"><label>Chronic conditions</label><input id="conditions" placeholder="e.g. Type 2 diabetes, hypertension"></div>
+    </section>
+
+    <!-- Step 3: Consent -->
+    <section id="step2" class="hidden">
+      <div class="stepnum">Step 3 of 4</div>
+      <h2>Consent & privacy</h2>
+      <p class="sub">Please review and acknowledge before continuing.</p>
+      <div class="fld"><label class="check"><input type="checkbox" id="c1"> I acknowledge I have received the Notice of Privacy Practices describing how my health information may be used and disclosed. <span class="req">*</span></label><div class="err">Required to continue</div></div>
+      <div class="fld"><label class="check"><input type="checkbox" id="c2"> I consent to treatment and to the electronic storage of my health information under applicable privacy safeguards. <span class="req">*</span></label><div class="err">Required to continue</div></div>
+      <div class="fld"><label class="check"><input type="checkbox" id="c3"> I consent to receive appointment reminders by email or SMS (optional).</label></div>
+      <div class="privacy">🔒 <span>In production, this form submits over TLS to a HIPAA-compliant backend, data is encrypted at rest, and access is logged for audit. This demo stores nothing — everything stays in your browser.</span></div>
+    </section>
+
+    <!-- Step 4: Review -->
+    <section id="step3" class="hidden">
+      <div class="stepnum">Step 4 of 4</div>
+      <h2>Review & submit</h2>
+      <p class="sub">Confirm your details are correct.</p>
+      <dl class="review" id="review"></dl>
+    </section>
+
+    <!-- Success -->
+    <section id="done" class="hidden">
+      <div class="success">
+        <div class="big">✓</div>
+        <h2>Intake submitted</h2>
+        <p class="sub" style="margin-bottom:0">Thank you, <span id="doneName">patient</span>. Your provider will review your information before your visit.</p>
+        <div class="badge">🔒 Transmitted securely · demo</div>
+      </div>
+    </section>
+
+    <div class="row" id="nav">
+      <button class="ghost" id="back" onclick="prev()" style="visibility:hidden">← Back</button>
+      <button class="primary" id="next" onclick="next()">Continue →</button>
+    </div>
+  </div>
+</main>
+
+<script>
+let step=0; const total=4;
+const $ = id => document.getElementById(id);
+
+function showBad(el,on){ el.classList.toggle('bad',on); const e=el.parentElement.querySelector('.err'); if(e) e.classList.toggle('show',on); }
+
+function validate(){
+  let ok=true;
+  const req=(id)=>{ const el=$(id); const bad=!el.value.trim(); showBad(el,bad); if(bad) ok=false; };
+  if(step===0){
+    ['first','last','dob','phone'].forEach(req);
+    const em=$('email'); const bad=!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em.value.trim()); showBad(em,bad); if(bad) ok=false;
+  }
+  if(step===1){ req('reason'); }
+  if(step===2){
+    [['c1'],['c2']].forEach(([id])=>{ const el=$(id); const bad=!el.checked; el.closest('.fld').querySelector('.err').classList.toggle('show',bad); if(bad) ok=false; });
+  }
+  return ok;
+}
+
+function render(){
+  for(let i=0;i<total;i++){ $('step'+i).classList.toggle('hidden',i!==step); $('bar'+i).className='step'+(i<step?' done':i===step?' active':''); }
+  $('done').classList.add('hidden');
+  $('nav').classList.remove('hidden');
+  $('back').style.visibility = step===0?'hidden':'visible';
+  $('next').textContent = step===total-1 ? '✓ Submit intake' : 'Continue →';
+  if(step===3) buildReview();
+}
+
+function buildReview(){
+  const g=id=>$(id).value.trim()||'—';
+  const rows=[['Name',g('first')+' '+g('last')],['Date of birth',g('dob')],['Sex at birth',g('sex')],['Email',g('email')],['Phone',g('phone')],['Reason for visit',g('reason')],['Allergies',g('allergies')],['Medications',g('meds')],['Chronic conditions',g('conditions')],['Reminders consent',$('c3').checked?'Yes':'No']];
+  $('review').innerHTML=rows.map(([k,v])=>'<dt>'+k+'</dt><dd>'+esc(v)+'</dd>').join('');
+}
+
+function next(){
+  if(!validate()) return;
+  if(step<total-1){ step++; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+  else submit();
+}
+function prev(){ if(step>0){ step--; render(); window.scrollTo({top:0,behavior:'smooth'}); } }
+
+function submit(){
+  for(let i=0;i<total;i++) $('step'+i).classList.add('hidden');
+  $('nav').classList.add('hidden');
+  $('done').classList.remove('hidden');
+  $('doneName').textContent = $('first').value.trim()||'patient';
+  for(let i=0;i<total;i++) $('bar'+i).className='step done';
+}
+function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+render();
+</script>
+</body>
+</html>

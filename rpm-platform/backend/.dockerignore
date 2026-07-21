@@ -1,0 +1,6 @@
+node_modules
+npm-debug.log
+rpm.db
+rpm.db-shm
+rpm.db-wal
+tests

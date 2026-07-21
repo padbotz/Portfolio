@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Clinical Note Summarizer — Demo</title>
+<style>
+  :root{
+    --bg:#f4f7fb; --card:#ffffff; --ink:#0f2740; --muted:#5b7089;
+    --brand:#0e7c86; --brand-2:#1591c9; --line:#e2e9f1; --soft:#eef5f9;
+    --ok:#0e9f6e; --warn:#c2410c; --shadow:0 6px 24px rgba(16,45,71,.08);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+  header{background:linear-gradient(120deg,var(--brand),var(--brand-2));color:#fff;padding:22px 28px}
+  header .wrap{max-width:1080px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .logo{display:flex;align-items:center;gap:12px;font-weight:700;font-size:19px}
+  .logo .dot{width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,.18);display:grid;place-items:center;font-size:18px}
+  header a{color:#fff;text-decoration:none;font-size:14px;opacity:.9}
+  .tag{font-size:12px;background:rgba(255,255,255,.16);padding:4px 10px;border-radius:999px}
+  main{max-width:1080px;margin:0 auto;padding:26px 28px 60px}
+  .lead{color:var(--muted);margin:6px 0 22px;max-width:720px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  @media(max-width:860px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:20px}
+  .card h2{margin:0 0 4px;font-size:16px}
+  .card .sub{color:var(--muted);font-size:13px;margin-bottom:14px}
+  textarea{width:100%;min-height:280px;border:1px solid var(--line);border-radius:10px;padding:14px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;resize:vertical;background:#fbfdff;color:var(--ink)}
+  textarea:focus{outline:2px solid var(--brand-2);border-color:transparent}
+  .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  button{border:0;border-radius:9px;padding:11px 18px;font-weight:600;font-size:14px;cursor:pointer}
+  .primary{background:var(--brand);color:#fff}
+  .primary:hover{background:#0b6771}
+  .ghost{background:var(--soft);color:var(--brand)}
+  .ghost:hover{background:#e2eef3}
+  .out{min-height:280px}
+  .placeholder{color:var(--muted);font-size:14px;display:grid;place-items:center;height:100%;text-align:center;padding:30px}
+  .soap{display:none}
+  .soap.show{display:block}
+  .sec{border-left:3px solid var(--brand-2);padding:2px 0 2px 14px;margin:0 0 16px}
+  .sec h3{margin:0 0 4px;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--brand)}
+  .sec ul{margin:6px 0 0;padding-left:18px}
+  .sec li{margin:2px 0;font-size:14px}
+  .sec p{margin:2px 0;font-size:14px}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+  .chip{background:var(--soft);color:var(--brand);border:1px solid #d5e6ec;font-size:12px;padding:3px 9px;border-radius:999px}
+  .banner{display:flex;align-items:center;gap:10px;background:#fff7ed;border:1px solid #fed7aa;color:var(--warn);font-size:12.5px;padding:9px 12px;border-radius:9px;margin-bottom:16px}
+  .loading{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:14px;padding:20px 0}
+  .spin{width:16px;height:16px;border:2px solid #cdd8e4;border-top-color:var(--brand);border-radius:50%;animation:s .7s linear infinite}
+  @keyframes s{to{transform:rotate(360deg)}}
+  .note-info{font-size:12px;color:var(--muted);margin-top:10px}
+  .foot{max-width:1080px;margin:0 auto;padding:0 28px 40px;color:var(--muted);font-size:12.5px}
+  code{background:#eef2f7;padding:1px 5px;border-radius:5px;font-size:12px}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="logo"><span class="dot">🩺</span> Clinical Note Summarizer <span class="tag">AI demo</span></div>
+    <a href="index.html">← Portfolio</a>
+  </div>
+</header>
+
+<main>
+  <p class="lead">Paste a free-text clinical note and get a clean, structured <strong>SOAP</strong> summary in seconds. Built to show how an LLM can cut clinician documentation time — one of the highest-demand health-tech use cases.</p>
+
+  <div class="banner">⚠️ Demo only — uses synthetic sample data. Not for real PHI. See note on connecting a real, HIPAA-compliant model below.</div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Clinical note (input)</h2>
+      <div class="sub">Free-text encounter note</div>
+      <textarea id="input" spellcheck="false"></textarea>
+      <div class="row">
+        <button class="primary" onclick="summarize()">✦ Summarize note</button>
+        <button class="ghost" onclick="loadSample()">Load sample</button>
+        <button class="ghost" onclick="clearAll()">Clear</button>
+      </div>
+      <div class="note-info">Try editing the sample, then re-summarize to see it adapt.</div>
+    </div>
+
+    <div class="card">
+      <h2>Structured summary (output)</h2>
+      <div class="sub">SOAP format · problem list · suggested codes</div>
+      <div id="out" class="out">
+        <div class="placeholder" id="ph">Your structured SOAP summary will appear here.<br>Load the sample and hit <strong>Summarize</strong>.</div>
+        <div id="loading" class="loading" style="display:none"><span class="spin"></span> Analyzing note…</div>
+        <div id="soap" class="soap">
+          <div class="sec"><h3>Subjective</h3><div id="s"></div></div>
+          <div class="sec"><h3>Objective</h3><div id="o"></div></div>
+          <div class="sec"><h3>Assessment</h3><div id="a"></div></div>
+          <div class="sec"><h3>Plan</h3><div id="p"></div></div>
+          <div class="sec"><h3>Problem list</h3><div class="chips" id="probs"></div></div>
+          <div class="sec"><h3>Suggested ICD-10 codes <span style="font-weight:400;text-transform:none;color:var(--muted)">(review required)</span></h3><div class="chips" id="codes"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="foot">
+  <strong>How this works & how to make it production-ready:</strong> This demo runs a lightweight rule-based parser in the browser so it works offline with no API key. In production you would replace <code>fakeSummarize()</code> with a call to a HIPAA-eligible LLM (e.g. Azure OpenAI or AWS Bedrock under a signed BAA), send the note server-side, and never expose keys client-side. The SOAP schema, problem list, and code-suggestion UI stay exactly the same.
+</div>
+
+<script>
+const SAMPLE = `Pt is a 54 y/o male presenting with a 3-day history of productive cough, subjective fever, and shortness of breath on exertion. Reports fatigue and decreased appetite. Denies chest pain. History of type 2 diabetes and hypertension. Current meds: metformin 1000mg BID, lisinopril 10mg daily.
+
+Vitals: Temp 38.4C, HR 98, BP 148/90, RR 22, SpO2 93% on room air. Lungs with crackles at right base. No peripheral edema.
+
+Impression: likely community-acquired pneumonia. Diabetes suboptimally controlled, last A1c 8.2%.
+
+Will order chest X-ray and CBC. Start amoxicillin-clavulanate 875mg BID x7 days. Encourage fluids and rest. Recheck A1c. Follow up in 3 days or sooner if worsening dyspnea. Return precautions given.`;
+
+function loadSample(){ document.getElementById('input').value = SAMPLE; }
+function clearAll(){ document.getElementById('input').value=''; document.getElementById('soap').classList.remove('show'); document.getElementById('ph').style.display='grid'; }
+window.onload = loadSample;
+
+function summarize(){
+  const text = document.getElementById('input').value.trim();
+  const ph = document.getElementById('ph'), load = document.getElementById('loading'), soap = document.getElementById('soap');
+  if(!text){ alert('Paste a clinical note first (or load the sample).'); return; }
+  ph.style.display='none'; soap.classList.remove('show'); load.style.display='flex';
+  // Simulated latency to mimic an API call
+  setTimeout(()=>{ load.style.display='none'; render(fakeSummarize(text)); soap.classList.add('show'); }, 750);
+}
+
+// --- Lightweight demo "AI": extracts structure from the note. Swap for a real LLM in prod. ---
+function fakeSummarize(t){
+  const low = t.toLowerCase();
+  const sentences = t.replace(/\n+/g,' ').split(/(?<=[.!?])\s+/).filter(Boolean);
+  const pick = (kws)=> sentences.filter(s=> kws.some(k=> s.toLowerCase().includes(k)));
+  const uniq = a=>[...new Set(a)];
+
+  const subj = uniq(pick(['present','history','reports','denies','complain','y/o','fatigue','appetite','cough','pain','fever','shortness']));
+  const obj  = uniq(pick(['vitals','temp','hr ','bp ','rr ','spo2','lungs','exam','crackles','edema','a1c','wbc']));
+  const assess = uniq(pick(['impression','likely','assessment','diagnosis','controlled','acquired']));
+  const plan = uniq(pick(['will order','start','encourage','follow up','recheck','return','precaution','refer','continue','x7','daily','bid']));
+
+  const problems=[];
+  const map=[['pneumonia','Community-acquired pneumonia','J18.9'],['diabetes','Type 2 diabetes mellitus','E11.9'],['hypertension','Essential hypertension','I10'],['cough','Cough','R05.9'],['dyspnea','Dyspnea','R06.00'],['fever','Fever','R50.9'],['fatigue','Fatigue','R53.83']];
+  const codes=[];
+  map.forEach(([kw,label,code])=>{ if(low.includes(kw)){ problems.push(label); codes.push(code+' · '+label); }});
+
+  return {
+    subj: subj.length?subj:['(No clear subjective statements detected.)'],
+    obj: obj.length?obj:['(No objective/exam findings detected.)'],
+    assess: assess.length?assess:['(No explicit assessment detected — review note.)'],
+    plan: plan.length?plan:['(No plan items detected.)'],
+    problems: problems.length?uniq(problems):['(None detected)'],
+    codes: codes.length?uniq(codes):['(None detected)']
+  };
+}
+
+function render(r){
+  const list = arr => '<ul>'+arr.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>';
+  document.getElementById('s').innerHTML=list(r.subj);
+  document.getElementById('o').innerHTML=list(r.obj);
+  document.getElementById('a').innerHTML=list(r.assess);
+  document.getElementById('p').innerHTML=list(r.plan);
+  document.getElementById('probs').innerHTML=r.problems.map(x=>'<span class="chip">'+esc(x)+'</span>').join('');
+  document.getElementById('codes').innerHTML=r.codes.map(x=>'<span class="chip">'+esc(x)+'</span>').join('');
+}
+function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+</script>
+</body>
+</html>

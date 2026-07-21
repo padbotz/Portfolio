@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+
+# Angular build output
+frontend/dist/
+frontend/.angular/
+
+# SQLite database (created & seeded on first run)
+backend/rpm.db
+backend/rpm.db-shm
+backend/rpm.db-wal
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor / OS
+.DS_Store
+.vscode/
+.idea/

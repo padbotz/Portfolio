@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Telehealth Scheduler — Demo</title>
+<style>
+  :root{
+    --bg:#f4f7fb;--card:#fff;--ink:#0f2740;--muted:#5b7089;--brand:#0e7c86;--brand-2:#1591c9;
+    --line:#e2e9f1;--soft:#eef5f9;--ok:#0e9f6e;--shadow:0 6px 24px rgba(16,45,71,.08);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+  header{background:linear-gradient(120deg,var(--brand),var(--brand-2));color:#fff;padding:22px 28px}
+  header .wrap{max-width:1080px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .logo{display:flex;align-items:center;gap:12px;font-weight:700;font-size:19px}
+  .logo .dot{width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,.18);display:grid;place-items:center;font-size:18px}
+  header a{color:#fff;text-decoration:none;font-size:14px;opacity:.9}
+  .tag{font-size:12px;background:rgba(255,255,255,.16);padding:4px 10px;border-radius:999px}
+  main{max-width:1080px;margin:0 auto;padding:26px 28px 60px}
+  .cols{display:grid;grid-template-columns:1.4fr 1fr;gap:22px}
+  @media(max-width:880px){.cols{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:20px;margin-bottom:22px}
+  h2{margin:0 0 3px;font-size:16px}.sub{color:var(--muted);font-size:13px;margin-bottom:16px}
+  .providers{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+  .prov{flex:1;min-width:180px;border:1px solid var(--line);border-radius:12px;padding:14px;cursor:pointer;display:flex;gap:12px;align-items:center;transition:.15s}
+  .prov:hover{border-color:var(--brand-2)}
+  .prov.sel{border-color:var(--brand);background:var(--soft);box-shadow:0 0 0 2px rgba(14,124,134,.15)}
+  .av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;display:grid;place-items:center;font-weight:700;font-size:16px}
+  .prov b{display:block;font-size:14px}.prov span{font-size:12px;color:var(--muted)}
+  .days{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:14px}
+  .day{border:1px solid var(--line);border-radius:10px;padding:8px 12px;text-align:center;cursor:pointer;min-width:64px;white-space:nowrap}
+  .day.sel{background:var(--brand);color:#fff;border-color:var(--brand)}
+  .day small{display:block;font-size:11px;opacity:.8}.day b{font-size:16px}
+  .slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}
+  .slot{border:1px solid var(--line);border-radius:9px;padding:9px 0;text-align:center;font-size:13px;font-weight:600;cursor:pointer;background:#fbfdff}
+  .slot:hover{border-color:var(--brand-2)}
+  .slot.taken{opacity:.4;cursor:not-allowed;text-decoration:line-through}
+  .slot.sel{background:var(--brand);color:#fff;border-color:var(--brand)}
+  .book{display:flex;flex-direction:column;gap:10px}
+  input,textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:14px;font-family:inherit;background:#fbfdff;color:var(--ink)}
+  input:focus,textarea:focus{outline:2px solid var(--brand-2);border-color:transparent}
+  button{border:0;border-radius:9px;padding:12px 18px;font-weight:600;font-size:14px;cursor:pointer}
+  .primary{background:var(--brand);color:#fff}.primary:hover{background:#0b6771}
+  .primary:disabled{background:#a9c5c9;cursor:not-allowed}
+  .summary{background:var(--soft);border:1px solid #d5e6ec;border-radius:10px;padding:12px 14px;font-size:13.5px}
+  .summary .muted{color:var(--muted)}
+  .appt{display:flex;gap:12px;align-items:center;border:1px solid var(--line);border-radius:11px;padding:12px;margin-bottom:10px}
+  .appt .when{width:52px;text-align:center;background:var(--soft);border-radius:9px;padding:6px 0}
+  .appt .when b{display:block;font-size:18px;color:var(--brand)}.appt .when small{font-size:10px;color:var(--muted)}
+  .appt .info{flex:1}.appt .info b{font-size:14px}.appt .info span{font-size:12px;color:var(--muted);display:block}
+  .pill{font-size:11px;background:#dcfce7;color:var(--ok);padding:3px 9px;border-radius:999px;font-weight:600}
+  .link{background:none;color:var(--brand-2);padding:6px 0;font-size:12px;text-decoration:underline}
+  .empty{color:var(--muted);font-size:13px;text-align:center;padding:20px}
+  .banner{display:flex;gap:10px;align-items:center;background:var(--soft);border:1px solid #d5e6ec;color:var(--brand);font-size:12.5px;padding:9px 12px;border-radius:9px;margin-bottom:18px}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="logo"><span class="dot">🎥</span> Telehealth Scheduler <span class="tag">demo</span></div>
+    <a href="index.html">← Portfolio</a>
+  </div>
+</header>
+
+<main>
+  <div class="banner">💡 Pick a provider, day, and time to book a virtual visit. Booked slots show up in your dashboard on the right. Demo data — nothing is stored.</div>
+  <div class="cols">
+    <div>
+      <div class="card">
+        <h2>1 · Choose a provider</h2>
+        <div class="sub">Available for video consultation</div>
+        <div class="providers" id="providers"></div>
+      </div>
+      <div class="card">
+        <h2>2 · Pick a day & time</h2>
+        <div class="sub" id="tzsub">Times shown in your local timezone</div>
+        <div class="days" id="days"></div>
+        <div class="slots" id="slots"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h2>3 · Confirm booking</h2>
+        <div class="sub">Your details for this visit</div>
+        <div class="book">
+          <input id="pname" placeholder="Your name">
+          <input id="pemail" type="email" placeholder="Email for the video link">
+          <textarea id="preason" rows="2" placeholder="Reason for visit (optional)"></textarea>
+          <div class="summary" id="summary"><span class="muted">Select a provider and time to see your booking summary.</span></div>
+          <button class="primary" id="confirm" disabled onclick="book()">Confirm appointment</button>
+        </div>
+      </div>
+      <div class="card">
+        <h2>My appointments</h2>
+        <div class="sub">Upcoming virtual visits</div>
+        <div id="dash"><div class="empty">No appointments booked yet.</div></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+const PROVIDERS=[
+  {id:'p1',name:'Dr. Maria Santos',spec:'Family Medicine',init:'MS'},
+  {id:'p2',name:'Dr. James Reyes',spec:'Internal Medicine',init:'JR'},
+  {id:'p3',name:'Dr. Anna Cruz',spec:'Pediatrics',init:'AC'}
+];
+const TIMES=['09:00','09:30','10:00','10:30','11:00','13:00','13:30','14:00','14:30','15:00','15:30'];
+const state={prov:null,day:0,slot:null,appts:[],taken:{}};
+
+// Randomly mark some slots as taken per provider/day so it feels real
+function seedTaken(){
+  PROVIDERS.forEach(p=>{ for(let d=0;d<5;d++){ const key=p.id+'-'+d; state.taken[key]=new Set();
+    TIMES.forEach(t=>{ if(Math.random()<0.3) state.taken[key].add(t); }); }});
+}
+seedTaken();
+
+const $=id=>document.getElementById(id);
+const dayLabels=(()=>{ const out=[]; const base=new Date(); let added=0,i=0;
+  while(added<5){ const dt=new Date(base); dt.setDate(base.getDate()+i); const dow=dt.getDay();
+    if(dow!==0&&dow!==6){ out.push({dow:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][dow],dnum:dt.getDate(),mon:dt.toLocaleString('en',{month:'short'})}); added++; } i++; }
+  return out; })();
+
+function renderProviders(){
+  $('providers').innerHTML=PROVIDERS.map(p=>`
+    <div class="prov ${state.prov===p.id?'sel':''}" onclick="selProv('${p.id}')">
+      <div class="av">${p.init}</div><div><b>${p.name}</b><span>${p.spec}</span></div>
+    </div>`).join('');
+}
+function renderDays(){
+  $('days').innerHTML=dayLabels.map((d,i)=>`
+    <div class="day ${state.day===i?'sel':''}" onclick="selDay(${i})">
+      <small>${d.dow}</small><b>${d.dnum}</b><small>${d.mon}</small></div>`).join('');
+}
+function renderSlots(){
+  if(!state.prov){ $('slots').innerHTML='<div class="empty" style="grid-column:1/-1">Choose a provider first.</div>'; return; }
+  const taken=state.taken[state.prov+'-'+state.day]||new Set();
+  $('slots').innerHTML=TIMES.map(t=>{
+    const isTaken=taken.has(t); const sel=state.slot===t;
+    return `<div class="slot ${isTaken?'taken':''} ${sel?'sel':''}" ${isTaken?'':`onclick="selSlot('${t}')"`}>${t}</div>`;
+  }).join('');
+}
+function selProv(id){ state.prov=id; state.slot=null; renderProviders(); renderSlots(); updateSummary(); }
+function selDay(i){ state.day=i; state.slot=null; renderDays(); renderSlots(); updateSummary(); }
+function selSlot(t){ state.slot=t; renderSlots(); updateSummary(); }
+
+function updateSummary(){
+  const s=$('summary'), btn=$('confirm');
+  if(state.prov&&state.slot){
+    const p=PROVIDERS.find(x=>x.id===state.prov); const d=dayLabels[state.day];
+    s.innerHTML=`<b>${p.name}</b> · ${p.spec}<br>${d.dow} ${d.mon} ${d.dnum}, ${state.slot} · 🎥 Video visit`;
+    btn.disabled=false;
+  } else { s.innerHTML='<span class="muted">Select a provider and time to see your booking summary.</span>'; btn.disabled=true; }
+}
+
+function book(){
+  const name=$('pname').value.trim();
+  if(!name){ alert('Please enter your name.'); return; }
+  const p=PROVIDERS.find(x=>x.id===state.prov); const d=dayLabels[state.day];
+  state.appts.push({prov:p,d,time:state.slot,name,reason:$('preason').value.trim()});
+  (state.taken[state.prov+'-'+state.day]||new Set()).add(state.slot);
+  state.slot=null; renderSlots(); updateSummary(); renderDash();
+  $('preason').value='';
+}
+function renderDash(){
+  if(!state.appts.length){ $('dash').innerHTML='<div class="empty">No appointments booked yet.</div>'; return; }
+  $('dash').innerHTML=state.appts.map((a,i)=>`
+    <div class="appt">
+      <div class="when"><b>${a.d.dnum}</b><small>${a.d.mon}</small></div>
+      <div class="info"><b>${a.prov.name}</b><span>${a.d.dow}, ${a.time} · ${a.prov.spec}</span>
+        ${a.reason?`<span>“${esc(a.reason)}”</span>`:''}
+        <button class="link" onclick="cancel(${i})">Cancel</button></div>
+      <span class="pill">Confirmed</span>
+    </div>`).join('');
+}
+function cancel(i){ const a=state.appts[i]; const key=a.prov.id+'-'+dayLabels.indexOf(a.d);
+  state.appts.splice(i,1); renderDash(); }
+function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+
+try{ $('tzsub').textContent='Times shown in '+Intl.DateTimeFormat().resolvedOptions().timeZone; }catch(e){}
+renderProviders(); renderDays(); renderSlots(); updateSummary();
+</script>
+</body>
+</html>

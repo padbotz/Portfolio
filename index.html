@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Abel Laquinon — Health-Tech Developer</title>
+<style>
+  :root{
+    --bg:#f4f7fb;--card:#fff;--ink:#0f2740;--muted:#5b7089;--brand:#0e7c86;--brand-2:#1591c9;
+    --line:#e2e9f1;--soft:#eef5f9;--shadow:0 6px 24px rgba(16,45,71,.08);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
+  .hero{background:linear-gradient(120deg,var(--brand),var(--brand-2));color:#fff;padding:56px 28px 60px}
+  .hero .wrap{max-width:940px;margin:0 auto}
+  .kicker{font-size:13px;letter-spacing:.08em;text-transform:uppercase;opacity:.85;font-weight:600}
+  .hero h1{margin:8px 0 10px;font-size:34px;line-height:1.15}
+  .hero p{font-size:17px;max-width:640px;opacity:.95;margin:0}
+  .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+  .t{background:rgba(255,255,255,.16);padding:5px 12px;border-radius:999px;font-size:12.5px}
+  main{max-width:940px;margin:0 auto;padding:36px 28px 70px}
+  .sectitle{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--brand);font-weight:700;margin-bottom:4px}
+  h2{margin:0 0 20px;font-size:22px}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  @media(max-width:820px){.cards{grid-template-columns:1fr}}
+  .demo{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;text-decoration:none;color:inherit;display:flex;flex-direction:column;transition:.15s}
+  .demo:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(16,45,71,.13)}
+  .demo .top{height:96px;display:grid;place-items:center;font-size:40px;background:linear-gradient(135deg,#e8f4f6,#dbedf6)}
+  .demo .body{padding:18px}
+  .demo h3{margin:0 0 6px;font-size:16px}
+  .demo p{margin:0 0 12px;font-size:13.5px;color:var(--muted)}
+  .demo .go{font-size:13px;font-weight:600;color:var(--brand)}
+  .stack{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+  .stack span{font-size:11px;background:var(--soft);color:var(--brand);border:1px solid #d5e6ec;padding:2px 8px;border-radius:999px}
+  .about{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:26px;margin-top:36px}
+  .about p{color:var(--muted);margin:0 0 12px}
+  .about p:last-child{margin:0}
+  .about b{color:var(--ink)}
+  footer{max-width:940px;margin:0 auto;padding:0 28px 40px;color:var(--muted);font-size:12.5px}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="wrap">
+    <div class="kicker">Health-Tech Software Developer</div>
+    <h1>I build compliant, AI-enabled software for healthcare.</h1>
+    <p>EHR-experienced developer specializing in HIPAA-aware applications, telehealth, and clinical AI integrations — the tools that save clinicians time and keep patient data safe.</p>
+    <div class="tags"><span class="t">HIPAA-aware</span><span class="t">EHR / clinical workflows</span><span class="t">Telehealth</span><span class="t">LLM / AI integration</span><span class="t">Full-stack</span></div>
+  </div>
+</div>
+
+<main>
+  <div class="sectitle">Portfolio</div>
+  <h2>Live demos</h2>
+  <div class="cards">
+    <a class="demo" href="clinical-note-summarizer.html">
+      <div class="top">🩺</div>
+      <div class="body">
+        <h3>AI Clinical Note Summarizer</h3>
+        <p>Turns a free-text encounter note into a structured SOAP summary with a problem list and suggested ICD-10 codes.</p>
+        <div class="go">Open demo →</div>
+        <div class="stack"><span>LLM</span><span>SOAP</span><span>ICD-10</span></div>
+      </div>
+    </a>
+    <a class="demo" href="patient-intake.html">
+      <div class="top">📋</div>
+      <div class="body">
+        <h3>HIPAA Patient Intake</h3>
+        <p>A guided, multi-step intake flow with validation, consent capture, and a review screen — privacy-first by design.</p>
+        <div class="go">Open demo →</div>
+        <div class="stack"><span>Forms</span><span>Consent</span><span>Validation</span></div>
+      </div>
+    </a>
+    <a class="demo" href="telehealth-scheduler.html">
+      <div class="top">🎥</div>
+      <div class="body">
+        <h3>Telehealth Scheduler</h3>
+        <p>Book virtual visits by provider, day, and time, with live availability and a patient appointment dashboard.</p>
+        <div class="go">Open demo →</div>
+        <div class="stack"><span>Scheduling</span><span>Availability</span><span>Dashboard</span></div>
+      </div>
+    </a>
+  </div>
+
+  <div class="about">
+    <div class="sectitle">About</div>
+    <h2 style="margin-bottom:14px">Why healthcare?</h2>
+    <p>I work day-to-day in e-health, so I already speak the language of clinical workflows, patient data, and the compliance guardrails that generic developers overlook. <b>HIPAA-aware design isn't an add-on for me — it's the starting point.</b></p>
+    <p>These three demos show the range: an <b>AI integration</b> that reduces documentation burden, a <b>compliance-conscious patient-facing flow</b>, and a <b>full product feature</b> in telehealth scheduling. Each is self-contained and runs in the browser.</p>
+    <p>Available for freelance and contract work on healthcare and health-adjacent software.</p>
+  </div>
+</main>
+
+<footer>
+  Demo portfolio · synthetic data only, no real PHI · built as self-contained HTML. Swap the mock logic for a HIPAA-eligible backend (Azure OpenAI / AWS Bedrock under a BAA) to take any of these to production.
+</footer>
+</body>
+</html>

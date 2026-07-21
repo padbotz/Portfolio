@@ -1,0 +1,23 @@
+# Run the whole stack with:  docker compose up --build
+# Frontend → http://localhost:4200   Backend API → http://localhost:3000
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      # Set a real secret in production:
+      - JWT_SECRET=change-me-in-production
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/api/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
